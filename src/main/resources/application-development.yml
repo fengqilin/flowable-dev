@@ -1,0 +1,9 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.0.65:5432/flowable6_6
+    username: smartsite
+    password: smartsite
+  
