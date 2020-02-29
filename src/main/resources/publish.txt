@@ -1,0 +1,73 @@
+package com.joywayi.flowable;
+
+import org.flowable.bpmn.model.FlowElement;
+import org.flowable.bpmn.model.Process;
+import org.flowable.bpmn.model.UserTask;
+import org.flowable.engine.RepositoryService;
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
+import org.flowable.engine.repository.Deployment;
+import org.flowable.engine.repository.ProcessDefinition;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import javax.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
+
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    public CommandLineRunner init(final RepositoryService repositoryService,
+                                  final RuntimeService runtimeService,
+                                  final TaskService taskService
+
+    ) {
+
+        return new CommandLineRunner() {
+            @Override
+            @Transactional
+            public void run(String... strings) throws Exception {
+                InputStream in = new FileInputStream("/Users/feng/eclipse-workspace/bpmn/src/holiday.bpmn");
+//                name must end with  bpmn20.xml or bpmn ,
+//                 if not you can deploy success,but you can not see model in act_re_procdef
+                Deployment deployment = repositoryService.createDeployment().addInputStream("bpmn",in).deploy();
+                System.out.println("-----> " + deployment.getId() );
+//
+//
+                //获取流程节点
+                List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().list();
+                for (ProcessDefinition processDefinition : list) {
+                    System.out.println(processDefinition.getId());
+                    System.out.println(processDefinition.getName());
+                    System.out.println(processDefinition.getResourceName());
+                    List<Process> processList = repositoryService.getBpmnModel(processDefinition.getId()).getProcesses();
+                    for (Process process : processList) {
+                        Collection<FlowElement> flowElements = process.getFlowElements();
+                        for (FlowElement flowElement : flowElements) {
+                            System.out.println( flowElement.getClass());
+                            if (flowElement instanceof UserTask) {
+                                System.out.println("UserTask：" + flowElement.getName() + ":" + ((UserTask) flowElement).getId() );
+                                System.out.println("UserTask：" + ((UserTask) flowElement).getTaskListeners());
+
+                            }
+                        }
+                    }
+                }
+
+//                ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProcess");
+
+
+            }
+        };
+
+    }
+}
