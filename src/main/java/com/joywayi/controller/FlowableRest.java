@@ -1,14 +1,10 @@
 package com.joywayi.controller;
 
 import com.joywayi.common.http.HttpResult;
-import com.sun.xml.internal.xsom.impl.scd.Iterators;
 import org.flowable.engine.IdentityService;
 import org.flowable.engine.ManagementService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
-import org.flowable.engine.impl.persistence.entity.ExecutionEntity;
-import org.flowable.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.flowable.engine.impl.util.CommandContextUtil;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +38,7 @@ public class FlowableRest {
     public HttpResult start(@PathVariable(name = "processKey") String processKey) {
         identityService.setAuthenticatedUserId("100");
         //启动一个新流程
+
         String procId = runtimeService.startProcessInstanceByKey(processKey).getId();
         List<Task> taskList = taskService.createTaskQuery().processInstanceId(procId).list();
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId( procId  ).singleResult();
@@ -83,7 +80,7 @@ public class FlowableRest {
      */
 
 
-    @RequestMapping(value = "/{procId}/next", method = RequestMethod.GET)
+    @RequestMapping(value = "/{procId}/complete", method = RequestMethod.GET)
     public HttpResult next(@PathVariable(name = "procId") String procId) {
         List<Task> taskList = taskService.createTaskQuery().processInstanceId(procId).list();
 
@@ -96,8 +93,6 @@ public class FlowableRest {
             Integer nrOfCompletedInstances = (Integer) taskService.getVariable(task.getId(), "nrOfCompletedInstances");
             result += task.getId()  + "===" + task.getAssignee() + "===>"  + "--->" + nrOfCompletedInstances + "/" + nrOfInstances;
             taskService.complete(task.getId());
-
-
 
 
             //后加---106

@@ -10,12 +10,16 @@ import org.flowable.bpmn.model.UserTask;
 import org.flowable.engine.ProcessEngine;
 import org.flowable.engine.ProcessEngines;
 import org.flowable.engine.RepositoryService;
+import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ModelQuery;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.repository.ProcessDefinitionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,6 +30,37 @@ public class FlowableManager {
     ProcessEngine processEngine;
     @Autowired
     RepositoryService repositoryService;
+
+    @RequestMapping("/deployment")
+    public  HttpResult deployment() throws FileNotFoundException {
+        InputStream in = new FileInputStream("/Users/feng/eclipse-workspace/bpmn/src/holiday.bpmn");
+//                name must end with  bpmn20.xml or bpmn ,
+//                 if not you can deploy success,but you can not see model in act_re_procdef
+        Deployment deployment = repositoryService.createDeployment().addInputStream("bpmn",in).deploy();
+
+//
+//
+        //获取流程节点
+        List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().list();
+        for (ProcessDefinition processDefinition : list) {
+            System.out.println(processDefinition.getId());
+            System.out.println(processDefinition.getName());
+            System.out.println(processDefinition.getResourceName());
+            List<Process> processList = repositoryService.getBpmnModel(processDefinition.getId()).getProcesses();
+            for (Process process : processList) {
+                Collection<FlowElement> flowElements = process.getFlowElements();
+                for (FlowElement flowElement : flowElements) {
+                    System.out.println( flowElement.getClass());
+                    if (flowElement instanceof UserTask) {
+                        System.out.println("UserTask：" + flowElement.getName() + ":" + ((UserTask) flowElement).getId() );
+                        System.out.println("UserTask：" + ((UserTask) flowElement).getTaskListeners());
+
+                    }
+                }
+            }
+        }
+        return  HttpResult.ok(deployment.getId());
+    }
 
     /**
      * 获取发布的流程
