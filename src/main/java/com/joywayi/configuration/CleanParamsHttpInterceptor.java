@@ -17,9 +17,9 @@ public class CleanParamsHttpInterceptor extends HandlerInterceptorAdapter {
         RequestHolder.remove();
     }
 
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        super.afterCompletion(request, response, handler,ex);
-        System.out.println("afterCompletion ------ params");
-    }
+//    @Override
+//    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+//        super.afterCompletion(request, response, handler,ex);
+//        System.out.println("afterCompletion ------ params");
+//    }
 }

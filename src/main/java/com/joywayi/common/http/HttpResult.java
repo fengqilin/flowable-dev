@@ -7,7 +7,7 @@ package com.joywayi.common.http;
  */
 public class HttpResult {
 
-	private int code = 200;
+	private int code = 20000;
 	private String msg;
 	private Object data;
 	

@@ -44,31 +44,14 @@ public class Initializer extends SpringBootServletInitializer {
                                   final TaskService taskService,
                                   final IdentityService identityService
 
-    ) {
+    )    {
 
         return new CommandLineRunner() {
             @Override
             @Transactional
             public void run(String... strings) throws Exception {
-                //启动前设置用户 100 发起， 101,102,103顺序 审 发起没有指定审批人
-//                identityService.setAuthenticatedUserId("100");
-//                ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("holidayRequest");
 
-
-//                List<Task> taskList = taskService.createTaskQuery().taskAssignee("10001").list();
-//                for(Task task :taskList ){
-//                    System.out.println("  " + task.getId());
-//                    System.out.println("  " + task.getAssignee());
-//                    System.out.println("  " + task.getDescription());
-//                    Map<String,Object> variables = new HashMap<String, Object>();
-//                    variables.put("chiefApprovePassed", true);
-//                    taskService.complete(task.getId(), variables);
-//                    System.out.println( "------ ok ");
-////                    task.setAssignee("10001");
-////                    taskService.setAssignee(  task.getId(),"10001" );
-//
-//                }
-
+//                StandardEvaluationContext context = new StandardEvaluationContext();
 
             }
         };

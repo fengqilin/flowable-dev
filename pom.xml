@@ -44,6 +44,7 @@
         <jakarta.persistence-api.version>2.2.3</jakarta.persistence-api.version>
         <jakarta.transaction-api.version>1.3.3</jakarta.transaction-api.version>
         <jakarta.validation-api.version>2.0.2</jakarta.validation-api.version>
+        <querydsl.version>4.2.2</querydsl.version>
         <flowable.version>6.5.0</flowable.version>
     </properties>
     <dependencies>
@@ -85,7 +86,7 @@
             <artifactId>spring-boot-devtools</artifactId>
             <version>2.2.4.RELEASE</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
@@ -93,7 +94,47 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <version>${querydsl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <version>${querydsl.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>com.mysema.maven</groupId>
+                <artifactId>apt-maven-plugin</artifactId>
+                <version>1.1.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/generated-sources/java</outputDirectory>
+                            <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
 
 
 </project>
